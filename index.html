@@ -106,7 +106,8 @@
       border-radius: 15px;
       text-align: center;
       max-width: 350px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      width: 90%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
     footer {
       background: #111;
@@ -127,16 +128,16 @@
   <div class="form-section">
     <h2>Get a Free Quote Now</h2>
     <form id="quote-form">
-      <input type="text" name="first_name" placeholder="First Name" required />
-      <input type="text" name="last_name" placeholder="Last Name" required />
-      <input type="text" name="zip" placeholder="ZIP Code" required />
-      <input type="text" name="address" placeholder="Home Address" required />
-      <input type="email" name="email" placeholder="Email Address" required />
-      <input type="tel" name="Primary_Phone" placeholder="Phone Number" required />
+      <input type="text" name="first_name" placeholder="First Name" required aria-label="First Name" />
+      <input type="text" name="last_name" placeholder="Last Name" required aria-label="Last Name" />
+      <input type="text" name="zip" placeholder="ZIP Code" required aria-label="ZIP Code" />
+      <input type="text" name="address" placeholder="Home Address" required aria-label="Home Address" />
+      <input type="email" name="email" placeholder="Email Address" required aria-label="Email Address" />
+      <input type="tel" name="Primary_Phone" placeholder="Phone Number" required aria-label="Phone Number" />
       <div class="dob-container">
-        <input type="text" name="dob_month" placeholder="MM" required />
-        <input type="text" name="dob_day" placeholder="DD" required />
-        <input type="text" name="dob_year" placeholder="YYYY" required />
+        <input type="text" name="dob_month" placeholder="MM" required aria-label="Birth Month" />
+        <input type="text" name="dob_day" placeholder="DD" required aria-label="Birth Day" />
+        <input type="text" name="dob_year" placeholder="YYYY" required aria-label="Birth Year" />
       </div>
       <input type="hidden" name="date_of_birth" id="date_of_birth" />
       <input type="hidden" name="publisher" value="healthquotepros" />
@@ -176,84 +177,77 @@
     <a href="tel:680-203-6035" style="color: #f8f6f1; font-weight: bold; text-decoration: underline;">680-203-6035</a>
   </footer>
   <script>
+    // Form submission handler and data processing
     document.getElementById("quote-form").addEventListener("submit", function (event) {
       event.preventDefault();
-      const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
-      const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
-      const yyyy = document.querySelector('[name="dob_year"]').value;
-      document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
 
-      const data = {
-        auth_token: "sg19yks0iek24aeebmmgebhsuwxsmpd4",
-        list_id: "9689",
-        check_dup: 0,
-        check_dup_archive: 0,
-        check_dnc: 0,
-        check_wireless: 0,
-        hopper: 1,
-        hopper_priority: 99,
-        hopper_expires_in: 0,
-        update_order_by_last_called_time: "DESC",
-        phone_code: 1,
-        first_name: document.querySelector('[name="first_name"]').value,
-        last_name: document.querySelector('[name="last_name"]').value,
-        phone_number: document.querySelector('[name="Primary_Phone"]').value,
-        email: document.querySelector('[name="email"]').value,
-        address1: document.querySelector('[name="address"]').value,
-        postal_code: document.querySelector('[name="zip"]').value,
-        date_of_birth: document.getElementById("date_of_birth").value,
-        publisher: "healthquotepros"
+      const firstName = document.querySelector('[name="first_name"]').value;
+      const lastName = document.querySelector('[name="last_name"]').value;
+      const zip = document.querySelector('[name="zip"]').value;
+      const address = document.querySelector('[name="address"]').value;
+      const email = document.querySelector('[name="email"]').value;
+      const phone = document.querySelector('[name="Primary_Phone"]').value;
+      const monthInput = document.querySelector('[name="dob_month"]').value;
+      const dayInput = document.querySelector('[name="dob_day"]').value;
+      const yearInput = document.querySelector('[name="dob_year"]').value;
+      const mm = monthInput.padStart(2, '0');
+      const dd = dayInput.padStart(2, '0');
+      const yyyy = yearInput;
+      const fullDOB = `${mm}/${dd}/${yyyy}`;
+      document.getElementById("date_of_birth").value = fullDOB;
+
+      // Data to be sent
+      const postData = {
+        first_name: firstName,
+        last_name: lastName,
+        zip,
+        address,
+        email,
+        phone_number: phone,
+        dob_day: dd,
+        dob_month: mm,
+        dob_year: yyyy
       };
 
       fetch("/.netlify/functions/postToConvoso", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    first_name: document.querySelector('[name="first_name"]').value,
-    last_name: document.querySelector('[name="last_name"]').value,
-    phone_number: document.querySelector('[name="Primary_Phone"]').value,
-    email: document.querySelector('[name="email"]').value,
-    address: document.querySelector('[name="address"]').value,
-    zip: document.querySelector('[name="zip"]').value,
-    dob_day: document.querySelector('[name="dob_day"]').value,
-    dob_month: document.querySelector('[name="dob_month"]').value,
-    dob_year: document.querySelector('[name="dob_year"]').value
-  })
-})
-.then(res => res.json())
-.then(data => {
-  if (data.success) {
-    document.getElementById("thankyou-popup").style.display = "flex";
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-    fbq('track', 'Lead');
-  } else {
-    alert("Submission failed: " + data.error);
-  }
-})
-.catch(() => alert("Something went wrong submitting the form."));
-
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(postData)
       })
       .then(res => res.json())
       .then(response => {
-        document.getElementById("thankyou-popup").style.display = "flex";
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        fbq('track', 'Lead');
+        if (response.success) {
+          document.getElementById("thankyou-popup").style.display = "flex";
+          if (typeof confetti === "function") {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+          }
+          if (typeof fbq === "function") {
+            fbq('track', 'Lead');
+          }
+          document.getElementById("quote-form").reset();
+        } else {
+          alert("Submission error: " + response.error);
+        }
       })
       .catch(err => {
-        console.error("Submission failed:", err);
+        console.error("Unexpected error:", err);
         alert("Something went wrong. Please try again.");
       });
     });
 
+    // Countdown timer logic with expiration message
     window.addEventListener("DOMContentLoaded", function () {
-      let timer = 300;
+      let timer = 300; // in seconds
       const timerDisplay = document.getElementById("timer");
-      setInterval(() => {
+      const countdownInterval = setInterval(() => {
         if (timer > 0) {
           timer--;
           const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
           const seconds = String(timer % 60).padStart(2, "0");
           timerDisplay.textContent = `${minutes}:${seconds}`;
+        } else {
+          timerDisplay.textContent = "Expired";
+          clearInterval(countdownInterval);
         }
       }, 1000);
     });
