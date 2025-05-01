@@ -205,20 +205,33 @@
         publisher: "healthquotepros"
       };
 
-      fetch("/.netlify/functions/postLead", {
+      fetch("/.netlify/functions/postToConvoso", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    firstname: document.querySelector('[name="first_name"]').value,
-    lastname: document.querySelector('[name="last_name"]').value,
-    zip: document.querySelector('[name="zip"]').value,
-    address: document.querySelector('[name="address"]').value,
+    first_name: document.querySelector('[name="first_name"]').value,
+    last_name: document.querySelector('[name="last_name"]').value,
+    phone_number: document.querySelector('[name="Primary_Phone"]').value,
     email: document.querySelector('[name="email"]').value,
-    phone: document.querySelector('[name="Primary_Phone"]').value,
+    address: document.querySelector('[name="address"]').value,
+    zip: document.querySelector('[name="zip"]').value,
     dob_day: document.querySelector('[name="dob_day"]').value,
     dob_month: document.querySelector('[name="dob_month"]').value,
     dob_year: document.querySelector('[name="dob_year"]').value
   })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.success) {
+    document.getElementById("thankyou-popup").style.display = "flex";
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    fbq('track', 'Lead');
+  } else {
+    alert("Submission failed: " + data.error);
+  }
+})
+.catch(() => alert("Something went wrong submitting the form."));
+
       })
       .then(res => res.json())
       .then(response => {
