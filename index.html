@@ -205,10 +205,20 @@
         publisher: "healthquotepros"
       };
 
-      fetch("https://api.convoso.com/v1/leads/insert", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
+      fetch("/.netlify/functions/postLead", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    firstname: document.querySelector('[name="first_name"]').value,
+    lastname: document.querySelector('[name="last_name"]').value,
+    zip: document.querySelector('[name="zip"]').value,
+    address: document.querySelector('[name="address"]').value,
+    email: document.querySelector('[name="email"]').value,
+    phone: document.querySelector('[name="Primary_Phone"]').value,
+    dob_day: document.querySelector('[name="dob_day"]').value,
+    dob_month: document.querySelector('[name="dob_month"]').value,
+    dob_year: document.querySelector('[name="dob_year"]').value
+  })
       })
       .then(res => res.json())
       .then(response => {
