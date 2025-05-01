@@ -119,7 +119,14 @@
       color: #f8f6f1;
       text-align: center;
       padding: 15px;
-    }
+      .form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: calc(100vh - 200px); /* adjust to keep header + countdown visible */
+  padding: 30px 15px;
+}
   </style>
 </head>
 <body>
@@ -130,6 +137,7 @@
   <div class="countdown">
     We’re holding your spot in the queue: <span id="timer" style="color: #111;">05:00</span>
   </div>
+ <div class="form-wrapper">
   <div class="form-section">
     <h2>Get a Free Quote Now</h2>
     <form id="quote-form">
@@ -153,6 +161,7 @@
       <button type="submit">See Plans & Prices</button>
     </form>
   </div>
+</div>
   <div class="popup-overlay" id="thankyou-popup">
     <div class="popup-box">
       🎉 Thank you! Your quote request has been submitted.<br />
