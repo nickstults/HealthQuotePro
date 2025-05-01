@@ -6,24 +6,6 @@
   <title>Get a Free Health Insurance Quote | Health Quote Pros</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- Meta Pixel Code -->
-  <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '722134523596603');
-    fbq('track', 'PageView');
-  </script>
-  <noscript>
-    <img height="1" width="1" style="display:none"
-         src="https://www.facebook.com/tr?id=722134523596603&ev=PageView&noscript=1"/>
-  </noscript>
-  <!-- End Meta Pixel Code -->
   <style>
     body {
       margin: 0;
@@ -156,6 +138,8 @@
         <input type="text" name="dob_day" placeholder="DD" required />
         <input type="text" name="dob_year" placeholder="YYYY" required />
       </div>
+      <input type="hidden" name="date_of_birth" id="date_of_birth" />
+      <input type="hidden" name="publisher" value="healthquotepros" />
       <label style="font-size: 13px; display: block; margin-top: 12px;">
         <input type="checkbox" id="consent" checked required /> I agree to the
         <a href="terms.html" target="_blank">Terms & Privacy Policy</a>
@@ -194,9 +178,50 @@
   <script>
     document.getElementById("quote-form").addEventListener("submit", function (event) {
       event.preventDefault();
-      document.getElementById("thankyou-popup").style.display = "flex";
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
+      const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
+      const yyyy = document.querySelector('[name="dob_year"]').value;
+      document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
+
+      const data = {
+        auth_token: "sg19yks0iek24aeebmmgebhsuwxsmpd4",
+        list_id: "9689",
+        check_dup: 0,
+        check_dup_archive: 0,
+        check_dnc: 0,
+        check_wireless: 0,
+        hopper: 1,
+        hopper_priority: 99,
+        hopper_expires_in: 0,
+        update_order_by_last_called_time: "DESC",
+        phone_code: 1,
+        first_name: document.querySelector('[name="first_name"]').value,
+        last_name: document.querySelector('[name="last_name"]').value,
+        phone_number: document.querySelector('[name="Primary_Phone"]').value,
+        email: document.querySelector('[name="email"]').value,
+        address1: document.querySelector('[name="address"]').value,
+        postal_code: document.querySelector('[name="zip"]').value,
+        date_of_birth: document.getElementById("date_of_birth").value,
+        publisher: "healthquotepros"
+      };
+
+      fetch("https://api.convoso.com/v1/leads/insert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(response => {
+        document.getElementById("thankyou-popup").style.display = "flex";
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        fbq('track', 'Lead');
+      })
+      .catch(err => {
+        console.error("Submission failed:", err);
+        alert("Something went wrong. Please try again.");
+      });
     });
+
     window.addEventListener("DOMContentLoaded", function () {
       let timer = 300;
       const timerDisplay = document.getElementById("timer");
