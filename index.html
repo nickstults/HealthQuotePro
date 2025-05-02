@@ -254,6 +254,11 @@
           if (typeof confetti === "function") {
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
           }
+             // Hide sticky call footer
+  const callFooter = document.querySelector('.call-footer');
+  if (callFooter) {
+    callFooter.style.display = 'none';
+          }
           if (typeof fbq === "function") {
             fbq('track', 'Lead');
           }
