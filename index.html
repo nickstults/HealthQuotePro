@@ -125,16 +125,35 @@
       width: 90%;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
-    footer {
-      ooter {
+   .call-footer {
   position: sticky;
   bottom: 0;
+  width: 100%;
   background: #111;
-  color: #f8f6f1;
-  text-align: center;
-  padding: 15px;
-  z-index: 100;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  z-index: 999;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+  flex-wrap: wrap;
+}
+
+.call-text {
+  font-size: 15px;
+  flex: 1;
+}
+
+.call-button {
+  background: #DC143C;
+  color: white;
+  padding: 10px 16px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  margin-left: 12px;
+  white-space: nowrap;
     }
   </style>
 </head>
@@ -197,8 +216,10 @@
   </div>
 
   <footer>
-    Health Quote Pros • Instant Enrollment Available • Call:
-    <a href="tel:680-203-6035" style="color: #f8f6f1; font-weight: bold; text-decoration: underline;">680-203-6035</a>
+<div class="call-text">
+    📞 Talk to a Licensed Agent Now
+  </div>
+  <a href="tel:680-203-6035" class="call-button">Call Now</a>
   </footer>
 
   <script>
