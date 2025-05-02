@@ -16,11 +16,10 @@
       flex-direction: column;
       min-height: 100vh;
     }
-
     .main-wrapper {
       flex: 1;
+      padding-bottom: 70px;
     }
-
     header {
       background: #111;
       color: #f8f6f1;
@@ -73,7 +72,7 @@
       flex: 1;
       padding: 10px 12px;
       box-sizing: border-box;
-        font-size: 16px;
+      font-size: 16px;
     }
     button {
       width: 100%;
@@ -102,8 +101,11 @@
     }
     .testimonial, .phone-number, .privacy-note {
       text-align: center;
-      margin: 20px auto 80px;
+      margin: 20px auto;
       font-size: 14px;
+    }
+    .privacy-note {
+      margin-bottom: 80px;
     }
     .popup-overlay {
       position: fixed;
@@ -126,175 +128,50 @@
       width: 90%;
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
-  .call-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 16px;
-  z-index: 999;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  gap: 8px;
-}
-
-@media (min-width: 480px) {
-  .call-footer {
-    flex-direction: row;
-    justify-content: center;
-    gap: 20px;
-  }
-}
-
-.call-text {
-  font-size: 15px;
-}
-
-.call-button {
-  background: #DC143C;
-  color: white;
-  padding: 10px 24px;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 8px;
-  white-space: nowrap;
-}
+    .call-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 16px;
+      z-index: 999;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      gap: 8px;
+    }
+    @media (min-width: 480px) {
+      .call-footer {
+        flex-direction: row;
+        justify-content: center;
+        gap: 20px;
+      }
+    }
+    .call-text {
+      font-size: 15px;
+    }
+    .call-button {
+      background: #DC143C;
+      color: white;
+      padding: 10px 24px;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      white-space: nowrap;
     }
   </style>
-</head>
-<body>
-  <div class="main-wrapper">
-    <header>
-      <h1>✅ Get Instant Health Coverage Quotes</h1>
-      <p class="subheadline">Licensed Agents • ACA & Private Plans • All Major Carriers</p>
-    </header>
-    <div class="countdown">
-      We’re holding your spot in the queue: <span id="timer" style="color: #DC143C;">05:00</span>
-    </div>
-    <div class="form-section">
-      <h2>Get a Free Quote Now</h2>
-      <form id="quote-form">
-        <input type="text" name="first_name" placeholder="First Name" required />
-        <input type="text" name="last_name" placeholder="Last Name" required />
-        <input type="text" name="zip" placeholder="ZIP Code" required />
-        <input type="text" name="address" placeholder="Home Address" required />
-        <input type="email" name="email" placeholder="Email Address" required />
-        <input type="tel" name="Primary_Phone" placeholder="Phone Number" required />
-        <div class="dob-container">
-          <input type="text" name="dob_month" placeholder="MM" required />
-          <input type="text" name="dob_day" placeholder="DD" required />
-          <input type="text" name="dob_year" placeholder="YYYY" required />
-        </div>
-        <input type="hidden" name="date_of_birth" id="date_of_birth" />
-        <input type="hidden" name="publisher" value="healthquotepros" />
-        <label style="font-size: 13px; display: block; margin-top: 12px;">
-          <input type="checkbox" id="consent" checked required /> I agree to the
-          <a href="terms.html" target="_blank">Terms & Privacy Policy</a>
-        </label>
-        <button type="submit">See Plans & Prices</button>
-      </form>
-    </div>
-    <div class="popup-overlay" id="thankyou-popup">
-      <div class="popup-box">
-        🎉 Thank you! Your quote request has been submitted.<br />
-        An agent will be calling you shortly!<br /><br />
-        -or-<br /><br />
-        📞 Call now to speak with a licensed agent:<br />
-        <strong><a href="tel:706-694-7073">706-694-7073</a></strong>
-      </div>
-    </div>
-    <div class="trust-logos">
-      <img src="Images/Aetna.png" alt="Aetna Logo" />
-      <img src="Images/BCBS.png" alt="BCBS Logo" />
-      <img src="Images/Cigna.png" alt="Cigna Logo" />
-      <img src="Images/UHC.png" alt="UHC Logo" />
-    </div>
-    <div class="testimonial">
-      <em>"Saved me over $150 a month! Highly recommend." – Jessica P.</em>
-    <div class="privacy-note">
-      Your information is safe and secure. HIPAA-compliant & encrypted.
-    </div>
-  </div>
-
-  <footer class="call-footer">
-  <div class="call-text">📞 Talk to a Licensed Agent Now</div>
-  <a href="tel:680-203-6035" class="call-button">Call Now</a>
-</footer>
-
   <script>
-    document.getElementById("quote-form").addEventListener("submit", function (event) {
-      event.preventDefault();
-      const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
-      const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
-      const yyyy = document.querySelector('[name="dob_year"]').value;
-      document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
-
-      const data = {
-        first_name: document.querySelector('[name="first_name"]').value,
-        last_name: document.querySelector('[name="last_name"]').value,
-        zip: document.querySelector('[name="zip"]').value,
-        address: document.querySelector('[name="address"]').value,
-        email: document.querySelector('[name="email"]').value,
-        phone_number: document.querySelector('[name="Primary_Phone"]').value,
-        dob_day: dd,
-        dob_month: mm,
-        dob_year: yyyy
-      };
-
-      fetch("/.netlify/functions/postToConvoso", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
+    let userIP = '';
+    fetch('https://api.ipify.org?format=json')
       .then(res => res.json())
-      .then(response => {
-        if (response.success) {
-          document.getElementById("thankyou-popup").style.display = "flex";
-          if (typeof confetti === "function") {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-          }
-             // Hide sticky call footer
-  const callFooter = document.querySelector('.call-footer');
-  if (callFooter) {
-    callFooter.style.display = 'none';
-          }
-          if (typeof fbq === "function") {
-            fbq('track', 'Lead');
-          }
-          document.getElementById("quote-form").reset();
-        } else {
-          alert("Submission error: " + response.error);
-        }
-      })
-      .catch(err => {
-        console.error("Unexpected error:", err);
-        alert("Something went wrong. Please try again.");
+      .then(data => {
+        userIP = data.ip;
       });
-    });
-
-    window.addEventListener("DOMContentLoaded", function () {
-      let timer = 300;
-      const timerDisplay = document.getElementById("timer");
-      const countdownInterval = setInterval(() => {
-        if (timer > 0) {
-          timer--;
-          const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
-          const seconds = String(timer % 60).padStart(2, "0");
-          timerDisplay.textContent = `${minutes}:${seconds}`;
-        } else {
-          timerDisplay.textContent = "Expired";
-          clearInterval(countdownInterval);
-        }
-      }, 1000);
-    });
   </script>
-</body>
-</html>
-
+</head>
 
 
