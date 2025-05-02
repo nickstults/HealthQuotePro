@@ -269,7 +269,7 @@
 
     // Submit to Google Sheets
     try {
-      const googleRes = await fetch("https://script.google.com/macros/s/AKfycbyZHUzl7MKbHhKje58ndhJkpYoNmSss3SrZ0o6u6SVdGB86atp-D_yPx2O3RiQep-L8/exec", {
+      const googleRes = await fetch("/.netlify/functions/postToGoogle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
