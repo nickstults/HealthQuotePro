@@ -101,7 +101,7 @@
     }
     .testimonial, .phone-number, .privacy-note {
       text-align: center;
-      margin: 20px auto;
+      margin: 20px auto 80px;
       font-size: 14px;
     }
     .popup-overlay {
@@ -126,8 +126,9 @@
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
    .call-footer {
-  position: sticky;
+  position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   background: #111;
   color: #fff;
@@ -215,12 +216,10 @@
     </div>
   </div>
 
-  <footer>
-<div class="call-text">
-    📞 Talk to a Licensed Agent Now
-  </div>
+  <footer class="call-footer">
+  <div class="call-text">📞 Talk to a Licensed Agent Now</div>
   <a href="tel:680-203-6035" class="call-button">Call Now</a>
-  </footer>
+</footer>
 
   <script>
     document.getElementById("quote-form").addEventListener("submit", function (event) {
