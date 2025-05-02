@@ -179,7 +179,6 @@
       <form id="quote-form">
         <input type="text" name="first_name" placeholder="First Name" required />
         <input type="text" name="last_name" placeholder="Last Name" required />
-        <input type="text" name="zip" placeholder="ZIP Code" required />
         <input type="text" name="address" placeholder="Home Address" required />
         <input type="email" name="email" placeholder="Email Address" required />
         <input type="tel" name="Primary_Phone" placeholder="Phone Number" required />
@@ -244,12 +243,12 @@
       const data = {
         first_name: document.querySelector('[name="first_name"]').value,
         last_name: document.querySelector('[name="last_name"]').value,
-        zip: document.querySelector('[name="zip"]').value,
         address: document.querySelector('[name="address"]').value,
         email: document.querySelector('[name="email"]').value,
         phone_number: document.querySelector('[name="Primary_Phone"]').value,
         date_of_birth: `${mm}/${dd}/${yyyy}`,
-        ip_address: userIP || ''
+        ip_address: userIP || '',
+          timestamp: new Date().toLocaleString()
       };
 
       // Submit to Convoso
@@ -260,7 +259,7 @@
       });
 
       // Optional: Also send to Google Sheets
-      fetch("https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbyep7oK-fRP8Ha4_Hu0aMM_t-Cz5ozuqic939Xtj33bn6hmwE9zqQZZNAZP2tsVUbFx/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
