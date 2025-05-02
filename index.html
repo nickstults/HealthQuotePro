@@ -242,17 +242,16 @@
     const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
     const yyyy = document.querySelector('[name="dob_year"]').value;
     document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
-
+const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
+const phoneClean = phoneRaw.replace(/\D/g, '');
+if (phoneClean.length !== 10) {
+  alert("Please enter a valid 10-digit U.S. phone number.");
+  return;
     const data = {
       first_name: document.querySelector('[name="first_name"]').value,
       last_name: document.querySelector('[name="last_name"]').value,
       address: document.querySelector('[name="address"]').value,
       email: document.querySelector('[name="email"]').value,
-      const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
-const phoneClean = phoneRaw.replace(/\D/g, '');
-if (phoneClean.length !== 10) {
-  alert("Please enter a valid 10-digit U.S. phone number.");
-  return;
 }
       date_of_birth: `${mm}/${dd}/${yyyy}`,
       ip_address: userIP || '',
