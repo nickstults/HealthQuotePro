@@ -47,17 +47,26 @@
       text-align: center;
       margin-bottom: 20px;
     }
-    input[type="text"], input[type="email"], input[type="tel"] {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 14px;
+    input[type="text"],
+input[type="email"],
+input[type="tel"] {
+  width: 100%;
+  padding: 10px 14px; /* Add left/right padding for better spacing */
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
     }
     .dob-container {
-      display: flex;
-      gap: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.dob-container input {
+  flex: 1;
+  padding: 10px 12px;
+  box-sizing: border-box;
     }
     .dob-container input {
       flex: 1;
