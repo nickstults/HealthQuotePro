@@ -253,32 +253,32 @@
       ip_address: userIP || '',
       timestamp: new Date().toLocaleString()
     };
+// Submit to Convoso
+try {
+  const convosoRes = await fetch("/.netlify/functions/postToConvoso", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  const convosoJson = await convosoRes.json();
+  console.log("✅ Convoso response:", convosoJson);
+} catch (err) {
+  console.error("❌ Convoso submission failed:", err);
+}
 
-    // Submit to Convoso
-    try {
-      const convosoRes = await fetch("/.netlify/functions/postToConvoso", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      const convosoJson = await convosoRes.json();
-      console.log("✅ Convoso response:", convosoJson);
-    } catch (err) {
-      console.error("❌ Convoso submission failed:", err);
-    }
+// Submit to Google Sheets
+try {
+  const googleRes = await fetch("/.netlify/functions/postToGoogle", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  const googleJson = await googleRes.json();
+  console.log("✅ Google Sheets response:", googleJson);
+} catch (err) {
+  console.error("❌ Google Sheets submission failed:", err);
+}
 
-    // Submit to Google Sheets
-    try {
-      const googleRes = await fetch("/.netlify/functions/postToGoogle", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
-    });
-      const googleJson = await googleRes.json();
-      console.log("✅ Google Sheets response:", googleJson);
-    } catch (err) {
-      console.error("❌ Google Sheets submission failed:", err);
-    }
 
     // Show success popup
     document.getElementById("thankyou-popup").style.display = "flex";
