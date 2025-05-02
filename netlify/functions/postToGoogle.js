@@ -8,7 +8,7 @@ exports.handler = async (event) => {
     form.append(key, data[key]);
   }
 
-  const response = await fetch("https://script.google.com/macros/s/AKfycbwKAa3reXziIuDCl-tS21jNfMaY3_RtvvArranwvvUP2gxICNF5ZeeV7ofuyCa9Njnm/exec", {
+  const response = await fetch("https://script.google.com/macros/s/AKfycbyep7oK-fRP8Ha4_Hu0aMM_t-Cz5ozuqic939Xtj33bn6hmwE9zqQZZNAZP2tsVUbFx/exec", {
     method: "POST",
     body: form
   });
