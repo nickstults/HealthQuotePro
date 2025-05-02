@@ -225,77 +225,96 @@
   </footer>
 
   <script>
-    let userIP = '';
-    fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => {
-        userIP = data.ip;
-      });
+  let userIP = '';
+  fetch('https://api.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => {
+      userIP = data.ip;
+    })
+    .catch(err => {
+      console.error("Failed to get IP address:", err);
+    });
 
-    document.getElementById("quote-form").addEventListener("submit", function (event) {
-      event.preventDefault();
+  document.getElementById("quote-form").addEventListener("submit", async function (event) {
+    event.preventDefault();
 
-      const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
-      const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
-      const yyyy = document.querySelector('[name="dob_year"]').value;
-      document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
+    const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
+    const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
+    const yyyy = document.querySelector('[name="dob_year"]').value;
+    document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
 
-      const data = {
-        first_name: document.querySelector('[name="first_name"]').value,
-        last_name: document.querySelector('[name="last_name"]').value,
-        address: document.querySelector('[name="address"]').value,
-        email: document.querySelector('[name="email"]').value,
-        phone_number: document.querySelector('[name="Primary_Phone"]').value,
-        date_of_birth: `${mm}/${dd}/${yyyy}`,
-        ip_address: userIP || '',
-          timestamp: new Date().toLocaleString()
-      };
+    const data = {
+      first_name: document.querySelector('[name="first_name"]').value,
+      last_name: document.querySelector('[name="last_name"]').value,
+      address: document.querySelector('[name="address"]').value,
+      email: document.querySelector('[name="email"]').value,
+      phone_number: document.querySelector('[name="Primary_Phone"]').value,
+      date_of_birth: `${mm}/${dd}/${yyyy}`,
+      ip_address: userIP || '',
+      timestamp: new Date().toLocaleString()
+    };
 
-      // Submit to Convoso
-      fetch("/.netlify/functions/postToConvoso", {
+    // Submit to Convoso
+    try {
+      const convosoRes = await fetch("/.netlify/functions/postToConvoso", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
+      const convosoJson = await convosoRes.json();
+      console.log("✅ Convoso response:", convosoJson);
+    } catch (err) {
+      console.error("❌ Convoso submission failed:", err);
+    }
 
-      // Optional: Also send to Google Sheets
-      fetch("https://script.google.com/macros/s/AKfycbyI289Y0NRytSctjebKp2025bZYFQwnm3lKzE5qQ0aS_bxlpYVzRhwvUekI5rO7Oak8/exec", {
+    // Submit to Google Sheets
+    try {
+      const googleRes = await fetch("https://script.google.com/macros/s/AKfycbyI289Y0NRytSctjebKp2025bZYFQwnm3lKzE5qQ0aS_bxlpYVzRhwvUekI5rO7Oak8/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
+      const googleJson = await googleRes.json();
+      console.log("✅ Google Sheets response:", googleJson);
+    } catch (err) {
+      console.error("❌ Google Sheets submission failed:", err);
+    }
 
-      document.getElementById("thankyou-popup").style.display = "flex";
-      if (typeof confetti === "function") {
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      }
-      const callFooter = document.querySelector('.call-footer');
-      if (callFooter) {
-        callFooter.style.transition = 'opacity 0.5s ease';
-        callFooter.style.opacity = '0';
-        setTimeout(() => callFooter.style.display = 'none', 500);
-      }
-      if (typeof fbq === "function") {
-        fbq('track', 'Lead');
-      }
-      document.getElementById("quote-form").reset();
-    });
+    // Show success popup
+    document.getElementById("thankyou-popup").style.display = "flex";
+    if (typeof confetti === "function") {
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    }
 
-    window.addEventListener("DOMContentLoaded", function () {
-      let timer = 300;
-      const timerDisplay = document.getElementById("timer");
-      const countdownInterval = setInterval(() => {
-        if (timer > 0) {
-          timer--;
-          const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
-          const seconds = String(timer % 60).padStart(2, "0");
-          timerDisplay.textContent = `${minutes}:${seconds}`;
-        } else {
-          timerDisplay.textContent = "Expired";
-          clearInterval(countdownInterval);
-        }
-      }, 1000);
-    });
-  </script>
+    const callFooter = document.querySelector('.call-footer');
+    if (callFooter) {
+      callFooter.style.transition = 'opacity 0.5s ease';
+      callFooter.style.opacity = '0';
+      setTimeout(() => callFooter.style.display = 'none', 500);
+    }
+
+    if (typeof fbq === "function") {
+      fbq('track', 'Lead');
+    }
+
+    document.getElementById("quote-form").reset();
+  });
+
+  window.addEventListener("DOMContentLoaded", function () {
+    let timer = 300;
+    const timerDisplay = document.getElementById("timer");
+    const countdownInterval = setInterval(() => {
+      if (timer > 0) {
+        timer--;
+        const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
+        const seconds = String(timer % 60).padStart(2, "0");
+        timerDisplay.textContent = `${minutes}:${seconds}`;
+      } else {
+        timerDisplay.textContent = "Expired";
+        clearInterval(countdownInterval);
+      }
+    }, 1000);
+  });
+</script>
 </body>
 </html>
