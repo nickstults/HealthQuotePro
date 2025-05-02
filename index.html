@@ -270,10 +270,10 @@
     // Submit to Google Sheets
     try {
       const googleRes = await fetch("/.netlify/functions/postToGoogle", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(data)
+    });
       const googleJson = await googleRes.json();
       console.log("✅ Google Sheets response:", googleJson);
     } catch (err) {
