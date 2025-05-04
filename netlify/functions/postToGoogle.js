@@ -1,26 +1,29 @@
-
-const { google } = require("googleapis");
+const fetch = require("node-fetch");
 
 exports.handler = async function(event) {
-  const params = new URLSearchParams(event.body);
-  const values = [
-    new Date().toLocaleString(),
-    params.get("first_name") || '',
-    params.get("last_name") || '',
-    params.get("address") || '',
-    params.get("email") || '',
-    params.get("phone_number") || '',
-    params.get("date_of_birth") || '',
-    params.get("ip_address") || '',
-    params.get("timestamp") || ''
-  ];
+  try {
+    const body = JSON.parse(event.body);
 
-  console.log("📥 Google Sheets Values:", values);
+    const response = await fetch("https://script.google.com/macros/s/AKfycbwKAa3reXziIuDCl-tS21jNfMaY3_RtvvArranwvvUP2gxICNF5ZeeV7ofuyCa9Njnm/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
 
-  // Skip email entirely (as requested)
+    const result = await response.json();
+    console.log("✅ Google Sheets success:", result);
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ success: true, message: "✅ Data sent to Google Sheets." })
-  };
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ success: true, result })
+    };
+  } catch (error) {
+    console.error("❌ Google Sheets submission failed:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ success: false, error: error.message })
+    };
+  }
 };
