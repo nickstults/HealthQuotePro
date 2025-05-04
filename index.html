@@ -166,96 +166,83 @@
   </footer>
 
   <script>
-  let userIP = '';
-  fetch('https://api.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => { userIP = data.ip; });
+let userIP = '';
+fetch('https://api.ipify.org?format=json')
+  .then(res => res.json())
+  .then(data => { userIP = data.ip; });
 
-  function startCountdown() {
-    const timerElement = document.getElementById("timer");
-    let seconds = 300;
-    const countdown = setInterval(() => {
-      const minutes = Math.floor(seconds / 60);
-      const secs = String(seconds % 60).padStart(2, '0');
-      timerElement.textContent = `${minutes}:${secs}`;
-      seconds--;
-      if (seconds < 0) clearInterval(countdown);
-    }, 1000);
+document.getElementById("quote-form").addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
+  const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
+  const yyyy = document.querySelector('[name="dob_year"]').value;
+  document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
+
+  const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
+  const phoneClean = phoneRaw.replace(/\D/g, '');
+  if (phoneClean.length !== 10) {
+    alert("Please enter a valid 10-digit U.S. phone number.");
+    return;
   }
-  startCountdown();
 
-  document.getElementById("quote-form").addEventListener("submit", async function (event) {
-    event.preventDefault();
+  const data = {
+    first_name: document.querySelector('[name="first_name"]').value,
+    last_name: document.querySelector('[name="last_name"]').value,
+    address: document.querySelector('[name="address"]').value,
+    email: document.querySelector('[name="email"]').value,
+    phone_number: phoneClean,
+    date_of_birth: `${mm}/${dd}/${yyyy}`,
+    ip_address: userIP || '',
+    timestamp: new Date().toLocaleString()
+  };
 
-    const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
-    const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
-    const yyyy = document.querySelector('[name="dob_year"]').value;
-    document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
-
-    const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
-    const phoneClean = phoneRaw.replace(/\D/g, '');
-    if (phoneClean.length !== 10) {
-      alert("Please enter a valid 10-digit U.S. phone number.");
-      return;
-    }
-
-    const data = {
-      first_name: document.querySelector('[name="first_name"]').value,
-      last_name: document.querySelector('[name="last_name"]').value,
-      address: document.querySelector('[name="address"]').value,
-      email: document.querySelector('[name="email"]').value,
-      phone_number: phoneClean,
-      date_of_birth: `${mm}/${dd}/${yyyy}`,
-      ip_address: userIP || '',
-      timestamp: new Date().toLocaleString()
-    };
-
-    const convosoRequest = fetch("/.netlify/functions/postToConvoso", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    const googleRequest = fetch("/.netlify/functions/postToGoogle", {
-      method: "POST",
-      body: new URLSearchParams(data)
-    });
-
-    Promise.allSettled([convosoRequest, googleRequest])
-      .then(async ([convosoRes, googleRes]) => {
-        if (convosoRes.status === "fulfilled") {
-          const json = await convosoRes.value.json().catch(() => ({}));
-          console.log("✅ Convoso response:", json);
-        } else {
-          console.error("❌ Convoso error:", convosoRes.reason);
-        }
-
-        if (googleRes.status === "fulfilled") {
-          const json = await googleRes.value.json().catch(() => ({}));
-          console.log("✅ Google Sheets response:", json);
-        } else {
-          console.error("❌ Google Sheets error:", googleRes.reason);
-        }
-
-        document.getElementById("thankyou-popup").style.display = "flex";
-        if (typeof confetti === "function") {
-          confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        }
-
-        const callFooter = document.querySelector('.call-footer');
-        if (callFooter) {
-          callFooter.style.transition = 'opacity 0.5s ease';
-          callFooter.style.opacity = '0';
-          setTimeout(() => callFooter.style.display = 'none', 500);
-        }
-
-        if (typeof fbq === "function") {
-          fbq('track', 'Lead');
-        }
-
-        document.getElementById("quote-form").reset();
-      });
+  const convosoRequest = fetch("/.netlify/functions/postToConvoso", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
   });
+
+  const googleRequest = fetch("/.netlify/functions/postToGoogle", {
+    method: "POST",
+    body: new URLSearchParams(data)
+  });
+
+  Promise.allSettled([convosoRequest, googleRequest])
+    .then(async ([convosoRes, googleRes]) => {
+      if (convosoRes.status === "fulfilled") {
+        const json = await convosoRes.value.json().catch(() => ({}));
+        console.log("✅ Convoso response:", json);
+      } else {
+        console.error("❌ Convoso error:", convosoRes.reason);
+      }
+
+      if (googleRes.status === "fulfilled") {
+        const json = await googleRes.value.json().catch(() => ({}));
+        console.log("✅ Google Sheets response:", json);
+      } else {
+        console.error("❌ Google Sheets error:", googleRes.reason);
+      }
+
+      document.getElementById("thankyou-popup").style.display = "flex";
+      if (typeof confetti === "function") {
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      }
+
+      const callFooter = document.querySelector('.call-footer');
+      if (callFooter) {
+        callFooter.style.transition = 'opacity 0.5s ease';
+        callFooter.style.opacity = '0';
+        setTimeout(() => callFooter.style.display = 'none', 500);
+      }
+
+      if (typeof fbq === "function") {
+        fbq('track', 'Lead');
+      }
+
+      document.getElementById("quote-form").reset();
+    });
+});
 </script>
 </body>
 </html>
