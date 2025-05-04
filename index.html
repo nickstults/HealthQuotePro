@@ -6,105 +6,7 @@
   <title>Get a Free Health Insurance Quote | Health Quote Pros</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: #f8f6f1;
-      color: #111;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .main-wrapper { flex: 1; padding-bottom: 70px; }
-    header {
-      background: #111;
-      color: #f8f6f1;
-      padding: 12px 16px 4px;
-      text-align: center;
-    }
-    .subheadline { font-size: 14px; margin-top: 4px; }
-    .countdown {
-      background: #f0ede9;
-      padding: 8px 12px;
-      text-align: center;
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 0;
-    }
-    .form-section {
-      width: 90%;
-      max-width: 400px;
-      margin: 15px auto 10px;
-      background: white;
-      padding: 18px 20px;
-      border-radius: 20px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-      border: 2px solid #000;
-    }
-    .form-section h2 {
-      text-align: center;
-      margin: 0 0 12px;
-      font-size: 20px;
-    }
-    input[type="text"], input[type="email"], input[type="tel"] {
-      width: 100%; padding: 10px 14px; margin: 8px 0;
-      border: 1px solid #ccc; border-radius: 10px; font-size: 16px; box-sizing: border-box;
-    }
-    .dob-container {
-      display: flex; gap: 10px;
-    }
-    .dob-container input {
-      flex: 1; padding: 10px 12px; font-size: 16px;
-    }
-    button {
-      width: 100%; background: #111; color: #f8f6f1;
-      padding: 12px; border: none; border-radius: 10px;
-      font-size: 16px; cursor: pointer; margin-top: 15px;
-    }
-    .trust-logos {
-      display: flex; justify-content: center; gap: 20px;
-      margin: 10px auto 30px; flex-wrap: wrap;
-    }
-    .trust-logos img {
-      height: 40px; transition: all 0.3s ease;
-    }
-    .trust-logos img:hover {
-      filter: drop-shadow(0 0 5px #111);
-    }
-    .testimonial, .phone-number, .privacy-note {
-      text-align: center; margin: 20px auto; font-size: 14px;
-    }
-    .privacy-note { margin-bottom: 80px; }
-    .popup-overlay {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.6); display: none;
-      justify-content: center; align-items: center; z-index: 1000;
-    }
-    .popup-box {
-      background: white; padding: 25px; border-radius: 15px;
-      text-align: center; max-width: 350px; width: 90%;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-    }
-    .call-footer {
-      position: fixed; bottom: 0; left: 0; width: 100%;
-      background: #111; color: #fff;
-      display: flex; flex-direction: column; align-items: center;
-      padding: 12px 16px; z-index: 999; text-align: center;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.15); gap: 8px;
-    }
-    @media (min-width: 480px) {
-      .call-footer {
-        flex-direction: row; justify-content: center; gap: 20px;
-      }
-    }
-    .call-text { font-size: 15px; }
-    .call-button {
-      background: #DC143C; color: white;
-      padding: 10px 24px; text-decoration: none;
-      font-weight: bold; border-radius: 8px; white-space: nowrap;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="main-wrapper">
@@ -166,107 +68,91 @@
   </footer>
 
   <script>
-let userIP = '';
-fetch('https://api.ipify.org?format=json')
-  .then(res => res.json())
-  .then(data => {
-    userIP = data.ip;
-  })
-  .catch(err => {
-    console.error("Failed to get IP address:", err);
-  });
+    let userIP = '';
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => { userIP = data.ip; })
+      .catch(err => console.error("Failed to get IP:", err));
 
-document.getElementById("quote-form").addEventListener("submit", function (event) {
-  event.preventDefault();
+    document.getElementById("quote-form").addEventListener("submit", function (event) {
+      event.preventDefault();
 
-  const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
-  const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
-  const yyyy = document.querySelector('[name="dob_year"]').value;
-  document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
+      const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
+      const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
+      const yyyy = document.querySelector('[name="dob_year"]').value;
+      const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
+      const phoneClean = phoneRaw.replace(/\D/g, '');
 
-  const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
-  const phoneClean = phoneRaw.replace(/\D/g, '');
-  if (phoneClean.length !== 10) {
-    alert("Please enter a valid 10-digit U.S. phone number.");
-    return;
-  }
-
-  const data = {
-    first_name: document.querySelector('[name="first_name"]').value,
-    last_name: document.querySelector('[name="last_name"]').value,
-    address: document.querySelector('[name="address"]').value,
-    email: document.querySelector('[name="email"]').value,
-    phone_number: phoneClean,
-    date_of_birth: `${mm}/${dd}/${yyyy}`,
-    ip_address: userIP || '',
-    timestamp: new Date().toLocaleString()
-  };
-
-const convosoRes = await fetch("/.netlify/functions/postToConvoso", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(data)
-});
-const convosoText = await convosoRes.text();
-console.log("✅ Convoso response:", convosoText);
-
-
-  const googleRequest = fetch("/.netlify/functions/postToGoogle", {
-    method: "POST",
-    body: new URLSearchParams(data)
-  });
-
-  Promise.allSettled([convosoRequest, googleRequest])
-    .then(async ([convosoRes, googleRes]) => {
-      if (convosoRes.status === "fulfilled") {
-        const json = await convosoRes.value.json();
-        console.log("✅ Convoso response:", json);
-      } else {
-        console.error("❌ Convoso error:", convosoRes.reason);
+      if (phoneClean.length !== 10) {
+        alert("Please enter a valid 10-digit U.S. phone number.");
+        return;
       }
 
-      if (googleRes.status === "fulfilled") {
-        const json = await googleRes.value.json();
-        console.log("✅ Google Sheets response:", json);
-      } else {
-        console.error("❌ Google Sheets error:", googleRes.reason);
-      }
+      const data = {
+        first_name: document.querySelector('[name="first_name"]').value,
+        last_name: document.querySelector('[name="last_name"]').value,
+        address: document.querySelector('[name="address"]').value,
+        email: document.querySelector('[name="email"]').value,
+        phone_number: phoneClean,
+        date_of_birth: `${mm}/${dd}/${yyyy}`,
+        ip_address: userIP || '',
+        timestamp: new Date().toLocaleString()
+      };
 
-      document.getElementById("thankyou-popup").style.display = "flex";
-      if (typeof confetti === "function") {
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-      }
+      const convosoRequest = fetch("/.netlify/functions/postToConvoso", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
 
-      const callFooter = document.querySelector('.call-footer');
-      if (callFooter) {
-        callFooter.style.transition = 'opacity 0.5s ease';
-        callFooter.style.opacity = '0';
-        setTimeout(() => callFooter.style.display = 'none', 500);
-      }
+      const googleRequest = fetch("/.netlify/functions/postToGoogle", {
+        method: "POST",
+        body: new URLSearchParams(data)
+      });
 
-      if (typeof fbq === "function") {
-        fbq('track', 'Lead');
-      }
+      Promise.allSettled([convosoRequest, googleRequest])
+        .then(async ([convosoRes, googleRes]) => {
+          if (convosoRes.status === "fulfilled") {
+            try {
+              const json = await convosoRes.value.json();
+              console.log("✅ Convoso response:", json);
+            } catch (err) {
+              console.error("❌ Convoso JSON parse error:", err);
+            }
+          } else {
+            console.error("❌ Convoso error:", convosoRes.reason);
+          }
 
-      document.getElementById("quote-form").reset();
+          if (googleRes.status === "fulfilled") {
+            try {
+              const json = await googleRes.value.json();
+              console.log("✅ Google Sheets response:", json);
+            } catch (err) {
+              console.error("❌ Google Sheets JSON parse error:", err);
+            }
+          } else {
+            console.error("❌ Google Sheets error:", googleRes.reason);
+          }
+
+          document.getElementById("thankyou-popup").style.display = "flex";
+          if (typeof confetti === "function") {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+          }
+
+          const callFooter = document.querySelector('.call-footer');
+          if (callFooter) {
+            callFooter.style.transition = 'opacity 0.5s ease';
+            callFooter.style.opacity = '0';
+            setTimeout(() => callFooter.style.display = 'none', 500);
+          }
+
+          if (typeof fbq === "function") {
+            fbq('track', 'Lead');
+          }
+
+          document.getElementById("quote-form").reset();
+        });
     });
-});
-
-window.addEventListener("DOMContentLoaded", function () {
-  let timer = 300;
-  const timerDisplay = document.getElementById("timer");
-  const countdownInterval = setInterval(() => {
-    if (timer > 0) {
-      timer--;
-      const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
-      const seconds = String(timer % 60).padStart(2, "0");
-      timerDisplay.textContent = `${minutes}:${seconds}`;
-    } else {
-      timerDisplay.textContent = "Expired";
-      clearInterval(countdownInterval);
-    }
-  }, 1000);
-});
   </script>
 </body>
 </html>
