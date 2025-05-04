@@ -202,14 +202,14 @@ document.getElementById("quote-form").addEventListener("submit", function (event
     timestamp: new Date().toLocaleString()
   };
 
-  const convosoRes = await fetch("/.netlify/functions/postToConvoso", {
+const convosoRes = await fetch("/.netlify/functions/postToConvoso", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(data)
 });
 const convosoText = await convosoRes.text();
 console.log("✅ Convoso response:", convosoText);
-  });
+
 
   const googleRequest = fetch("/.netlify/functions/postToGoogle", {
     method: "POST",
