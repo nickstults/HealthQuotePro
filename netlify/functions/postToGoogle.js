@@ -1,17 +1,22 @@
 const fetch = require("node-fetch");
 
 exports.handler = async function (event) {
-  const data = JSON.parse(event.body);
+  const data = new URLSearchParams(event.body);
 
-  const response = await fetch("https://script.google.com/macros/s/AKfycbxrd1QfKygzfiDKCfwADjer_kQYAP_DbPe1w4L-f3_dF_uNldZJ6Bpv4r5SEsD782ZW/exec", {
+  const googleScriptUrl = "https://script.google.com/macros/s/AKfycbx0rk9e_ygUuS7yA1XzsjsytetzfwjsMyLUg9eFNb8LtU4vik9cNsHubJDS6wc2w/exec";
+
+  const response = await fetch(googleScriptUrl, {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(data).toString()
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: data
   });
 
-  const result = await response.json();
+  const resultText = await response.text();
+
   return {
     statusCode: 200,
-    body: JSON.stringify(result),
+    body: resultText
   };
 };
