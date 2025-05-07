@@ -129,21 +129,20 @@
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     }
     .call-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #111;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 6px 12px;
-  z-index: 999;
-  text-align: center;
-  box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.15);
-  gap: 4px;
-}
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 12px;
+      z-index: 999;
+      text-align: center;
+      box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.15);
+      gap: 4px;
     }
     @media (min-width: 480px) {
       .call-footer {
@@ -163,6 +162,32 @@
       font-weight: bold;
       border-radius: 8px;
       white-space: nowrap;
+    }
+
+    /* MOBILE SPECIFIC STYLES */
+    @media (max-width: 768px) {
+      .form-section {
+        width: 90%;  /* Adjust form to 90% width */
+        padding: 10px 15px;  /* Adjust padding */
+        margin: 15px auto 10px;  /* Ensure margin keeps the form centered */
+      }
+
+      header {
+        padding: 10px;  /* Reduce padding in header */
+      }
+
+      .countdown {
+        font-size: 14px;  /* Adjust font size for countdown */
+      }
+
+      .call-footer {
+        flex-direction: column;  /* Stack footer items on mobile */
+        gap: 20px;
+      }
+
+      .call-button {
+        font-size: 14px;  /* Make button text slightly smaller for mobile */
+      }
     }
   </style>
 </head>
@@ -226,94 +251,94 @@
   </footer>
 
   <script>
-let userIP = '';
-fetch('https://api.ipify.org?format=json')
-  .then(res => res.json())
-  .then(data => { userIP = data.ip; })
-  .catch(err => console.error("Failed to get IP address:", err));
+    let userIP = '';
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => { userIP = data.ip; })
+      .catch(err => console.error("Failed to get IP address:", err));
 
-document.getElementById("quote-form").addEventListener("submit", function (event) {
-  event.preventDefault();
+    document.getElementById("quote-form").addEventListener("submit", function (event) {
+      event.preventDefault();
 
-  const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
-  const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
-  const yyyy = document.querySelector('[name="dob_year"]').value;
-  document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
+      const mm = document.querySelector('[name="dob_month"]').value.padStart(2, '0');
+      const dd = document.querySelector('[name="dob_day"]').value.padStart(2, '0');
+      const yyyy = document.querySelector('[name="dob_year"]').value;
+      document.getElementById("date_of_birth").value = `${mm}/${dd}/${yyyy}`;
 
-  const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
-  const phoneClean = phoneRaw.replace(/\D/g, '');
-  if (phoneClean.length !== 10) {
-    alert("Please enter a valid 10-digit U.S. phone number.");
-    return;
-  }
+      const phoneRaw = document.querySelector('[name="Primary_Phone"]').value;
+      const phoneClean = phoneRaw.replace(/\D/g, '');
+      if (phoneClean.length !== 10) {
+        alert("Please enter a valid 10-digit U.S. phone number.");
+        return;
+      }
 
-  const data = {
-    first_name: document.querySelector('[name="first_name"]').value,
-    last_name: document.querySelector('[name="last_name"]').value,
-    address: document.querySelector('[name="address"]').value,
-    email: document.querySelector('[name="email"]').value,
-    phone_number: phoneClean,
-    date_of_birth: `${mm}/${dd}/${yyyy}`,
-    ip_address: userIP || '',
-    timestamp: new Date().toLocaleString()
-  };
+      const data = {
+        first_name: document.querySelector('[name="first_name"]').value,
+        last_name: document.querySelector('[name="last_name"]').value,
+        address: document.querySelector('[name="address"]').value,
+        email: document.querySelector('[name="email"]').value,
+        phone_number: phoneClean,
+        date_of_birth: `${mm}/${dd}/${yyyy}`,
+        ip_address: userIP || '',
+        timestamp: new Date().toLocaleString()
+      };
 
-  // ✅ Show success UI immediately
-  document.getElementById("thankyou-popup").style.display = "flex";
-  if (typeof confetti === "function") {
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-  }
+      // ✅ Show success UI immediately
+      document.getElementById("thankyou-popup").style.display = "flex";
+      if (typeof confetti === "function") {
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      }
 
-  const callFooter = document.querySelector('.call-footer');
-  if (callFooter) {
-    callFooter.style.transition = 'opacity 0.5s ease';
-    callFooter.style.opacity = '0';
-    setTimeout(() => callFooter.style.display = 'none', 500);
-  }
+      const callFooter = document.querySelector('.call-footer');
+      if (callFooter) {
+        callFooter.style.transition = 'opacity 0.5s ease';
+        callFooter.style.opacity = '0';
+        setTimeout(() => callFooter.style.display = 'none', 500);
+      }
 
-  if (typeof fbq === "function") {
-    fbq('track', 'Lead');
-  }
+      if (typeof fbq === "function") {
+        fbq('track', 'Lead');
+      }
 
-  document.getElementById("quote-form").reset();
+      document.getElementById("quote-form").reset();
 
-  // 🎯 Submit in background
-  fetch("/.netlify/functions/postToConvoso", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  }).then(res => res.json()).then(json => {
-    console.log("✅ Convoso:", json);
-  }).catch(err => {
-    console.error("❌ Convoso failed:", err);
-  });
+      // 🎯 Submit in background
+      fetch("/.netlify/functions/postToConvoso", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }).then(res => res.json()).then(json => {
+        console.log("✅ Convoso:", json);
+      }).catch(err => {
+        console.error("❌ Convoso failed:", err);
+      });
 
-  fetch("/.netlify/functions/postToGoogle", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  }).then(res => res.json()).then(json => {
-    console.log("✅ Email/Sheets:", json);
-  }).catch(err => {
-    console.error("❌ Email/Sheets failed:", err);
-  });
-});
+      fetch("/.netlify/functions/postToGoogle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      }).then(res => res.json()).then(json => {
+        console.log("✅ Email/Sheets:", json);
+      }).catch(err => {
+        console.error("❌ Email/Sheets failed:", err);
+      });
+    });
 
-window.addEventListener("DOMContentLoaded", function () {
-  let timer = 300;
-  const timerDisplay = document.getElementById("timer");
-  const countdownInterval = setInterval(() => {
-    if (timer > 0) {
-      timer--;
-      const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
-      const seconds = String(timer % 60).padStart(2, "0");
-      timerDisplay.textContent = `${minutes}:${seconds}`;
-    } else {
-      timerDisplay.textContent = "Expired";
-      clearInterval(countdownInterval);
-    }
-  }, 1000);
-});
-</script>
+    window.addEventListener("DOMContentLoaded", function () {
+      let timer = 300;
+      const timerDisplay = document.getElementById("timer");
+      const countdownInterval = setInterval(() => {
+        if (timer > 0) {
+          timer--;
+          const minutes = String(Math.floor(timer / 60)).padStart(2, "0");
+          const seconds = String(timer % 60).padStart(2, "0");
+          timerDisplay.textContent = `${minutes}:${seconds}`;
+        } else {
+          timerDisplay.textContent = "Expired";
+          clearInterval(countdownInterval);
+        }
+      }, 1000);
+    });
+  </script>
 </body>
 </html>
